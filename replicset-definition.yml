@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-replicaset
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  template:
+          # Under template it is defined the definition of the pod unde the replicaset.
+    metadata:
+      name: myapp-pod
+      labels:
+        app: myapp
+        type: front-end
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx
+  replicas: 3
+  selector:
+          # under selector you have to insert the pods that will be managed by replica set. That because the replica sets can manage pods that are not created by it. 
+          matchLabels:
+                  type: front-end      
+         

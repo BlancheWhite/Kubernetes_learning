@@ -1,0 +1,38 @@
+# Info from "https://medium.com/dev-genius/understanding-kubernetes-probes-5daaff67599a"
+# Liveness probes are used to restart unhealthy containers. The kubelet periodically pings 
+# the liveness probe, determines the health, and kills the pod if it fails the liveness check. 
+# Liveness checks can help the application recover from a deadlock situation. Without liveness checks, 
+# Kubernetes deems a deadlocked pod healthy since the underlying process continues to run from Kubernetes’s perspective. 
+# By configuring the liveness probe, the kubelet can detect that the application is in a bad state and 
+# restarts the pod to restore availability.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp
+  labels:
+    name: simple-webapp
+spec:
+  containers:
+    - name: simple-webapp
+      image: simple-webapp
+      ports:
+        - containerPort: 8080
+      livenessProbe:
+        httpGet:
+          path: /api/ready
+          port: 8080
+
+    #livenessProbe:
+    #  tcpSocket:
+    #    port: 3306
+    #
+    #livenessProbe:
+    #  exec:
+    #    command:
+    #      - cat
+    #      - /app/is_healthy
+    #
+    #  initialDelaySeconds: 10
+    #  periodSeconds: 5
+    #  failureThreshold: 8              
