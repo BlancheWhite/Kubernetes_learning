@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: wordpress
+  name: web-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: web-db
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:   
+        app: wordpress
+        tier: web-db
+    spec:
+      containers:
+      - image: mysql
+        name: web-db
+        envFrom:
+          - secretRef:
+                  name: websecrets
+        ports:
+          - containerPort: 3306
+            name: web-db
+        volumeMounts:
+          - mountPath: /var/lib/mysql
+            name: db-volume
+      volumes:
+        - name: db-volume
+          persistentVolumeClaim:
+                  claimName: dbclaim
+

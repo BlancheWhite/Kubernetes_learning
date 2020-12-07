@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: wordpress
+  name: wordpress
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: front-end
+      app: wordpress
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        tier: front-end
+        app: wordpress
+    spec:
+      containers:
+      - image: wordpress:5.5-apache
+        name: wordpress
+        envFrom:
+          - secretRef:
+                  name: websecrets
+        volumeMounts:
+          - mountPath: /var/www/html
+            name: web-volume
+        ports:
+          - containerPort: 80
+            name: wordpress
+      volumes:
+        - name: web-volume
+          persistentVolumeClaim:
+                  claimName: webclaim
+
